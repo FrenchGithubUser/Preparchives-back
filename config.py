@@ -1,5 +1,5 @@
-host_db = "212.227.188.157"
-user_db =  "preparchive"
+host_db = ""
+user_db =  ""
 port_db = 3306
-password_db = "lounis"
-database = "preparchive"
+password_db = ""
+database = ""
