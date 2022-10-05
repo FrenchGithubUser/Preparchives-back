@@ -5,7 +5,7 @@ import config
 import mysql.connector
 import datetime
 
-
+ 
 connection_params = {
         'host' : config.host_db,
         'user': config.user_db,
