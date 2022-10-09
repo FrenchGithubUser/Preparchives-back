@@ -26,28 +26,30 @@ def index():
 def register():
     #Préparation de la requete
     params = []
-    requete = "INSERT into utilisateur"
     #Récupération des paramètres de la requete
-    if 'email' in request.args() and 'username' in request.args() and 'password' in request.args():
+    if 'email' in request.args and 'username' in request.args and 'password' in request.args:
         email = request.args.get("email")
         username = request.args.get("username")
         nom = request.args.get("nom")
         prenom = request.args.get("prenom")
         password = request.args.get("password")
+
     else:
         return jsonify({ 'error' : 'Register Error : No email, or username or password'})
     
-    
-    
+    ## Cas ou le nom et le prénom ne sont pas fournis
+    if not('nom' in request.args) and not('nom' in request.args):
+        requete = "INSERT into utilisateur (email, username, password) VALUES (%s,%s,%s)"
+        params.append(email)
+        params.append(username)
+        params.append(password)
+
     try:
         with mysql.connector.connect(**connection_params) as db :
             with db.cursor() as c:
                 c.execute(requete, params)
-                results =  c.fetchall()
-                if results :
-                    return jsonify(results) 
-                else :
-                    return jsonify()
+                db.commit()
+                return jsonify('true')
 
     except Exception as err:
         return jsonify({ 'error' : 'mysql_connector. Error : ' + str(err)})
