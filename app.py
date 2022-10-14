@@ -4,6 +4,7 @@ from flask import Flask,jsonify, request
 import config
 import mysql.connector
 import datetime
+import re
 
  
 connection_params = {
@@ -22,20 +23,27 @@ app = Flask(__name__)
 def index():
     return "API PREPARCHIVES"
 
-@app.route('/user/register', methods=['GET'])
+@app.route('/user/register', methods=['POST'])
 def register():
 
     #Récupération des paramètres de la requete
-    if 'email' in request.args and 'username' in request.args and 'password' in request.args:
-        email = request.args.get("email")
-        username = request.args.get("username")
-        nom = request.args.get("nom")
-        prenom = request.args.get("prenom")
-        password = request.args.get("password")
+    if 'email' in request.form and 'username' in request.form and 'password' in request.form:
+        email = request.form["email"]
+        username = request.form["username"]
+        password = request.form["password"]
     else:
         return jsonify({ 'error' : 'Register Error : No email, or username or password'})
 
-    ## Test pour savoir si un email ou un username est déja utilisé
+    ## Test Pour savoir si l'email à un format valide
+    pattern = "^\S+@\S+\.\S+$"
+    objs = re.search(pattern, email)
+    try:
+        if objs.string == email:
+            pass
+    except:
+        return jsonify({ 'error' : 'Register Error : Bad email'})
+
+    ## Test pour savoir si un email ou un username sont déja utilisés
     try:
         params = []
         requete = "SELECT * FROM utilisateur WHERE email=%s OR username=%s"
@@ -52,27 +60,32 @@ def register():
 
 
     ## Cas ou le nom et le prénom ne sont pas fournis
-    if not('nom' in request.args) and not('nom' in request.args):
+    if not('nom' in request.form) and not('prenom' in request.form):
         requete = "INSERT into utilisateur (email, username, password) VALUES (%s,%s,%s)"
         params.append(password)
 
     ## Cas ou le nom est fournis
-    if not('nom' in request.args) and ('nom' in request.args):
+    if not('prenom' in request.form) and ('nom' in request.form):
+        nom = request.form["nom"]
         requete = "INSERT into utilisateur (email, username, password, nom) VALUES (%s,%s,%s,%s)"
         params.append(password)
         params.append(nom)
     ## Cas ou le prénom est fournis
-    if ('nom' in request.args) and not('nom' in request.args):
+    if ('prenom' in request.form) and not('nom' in request.form):
+        prenom = request.form["prenom"]
         requete = "INSERT into utilisateur (email, username, password, prenom) VALUES (%s,%s,%s,%s)"
         params.append(password)
         params.append(prenom)
     ## Cas ou le nom et le prénom sont fournis
-    if ('nom' in request.args) and ('nom' in request.args):
+    if ('nom' in request.form) and ('prenom' in request.form):
+        nom = request.form["nom"]
+        prenom = request.form["prenom"]
         requete = "INSERT into utilisateur (email, username, password, nom, prenom) VALUES (%s,%s,%s,%s,%s)"
         params.append(password)
         params.append(nom)
         params.append(prenom)
 
+    #Envoie de la requete INSERT
     try:
         with mysql.connector.connect(**connection_params) as db :
             with db.cursor() as c:
