@@ -1,10 +1,12 @@
 from crypt import methods
 from unittest import result
-from flask import Flask,jsonify, request
+from flask import Flask,jsonify, request, make_response
 import config
 import mysql.connector
 import datetime
 import re
+import jwt          ##      https://www.bacancytechnology.com/blog/flask-jwt-authentication
+from passlib.hash import sha256_crypt  ##      https://pythonprogramming.net/password-hashing-flask-tutorial/
 
  
 connection_params = {
@@ -30,7 +32,9 @@ def register():
     if 'email' in request.form and 'username' in request.form and 'password' in request.form:
         email = request.form["email"]
         username = request.form["username"]
-        password = request.form["password"]
+        password = sha256_crypt.encrypt(request.form["password"])
+
+
     else:
         return jsonify({ 'error' : 'Register Error : No email, or username or password'})
 
