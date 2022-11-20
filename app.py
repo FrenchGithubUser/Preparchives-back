@@ -1,4 +1,5 @@
 from crypt import methods
+import os
 from unittest import result
 from flask import Flask,jsonify, request, make_response
 from sqlalchemy import true
@@ -141,6 +142,17 @@ def login():
     else : 
         return jsonify({ 'error' : 'Login Error : Bad Password'})
 
+
+@app.route('/sujet', methods=['POST'])
+def ajout_sujet():
+    if 'file' in request.files:
+        file = request.files['file']
+        filename = 'test'
+        file.save(os.path.join(config.subject_folder + filename))
+    else:
+        return jsonify({ 'error' : 'Subject Error : No file'})
+
+    return 'true'
 
 
 
