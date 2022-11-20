@@ -1,6 +1,7 @@
 from crypt import methods
 from unittest import result
 from flask import Flask,jsonify, request, make_response
+from sqlalchemy import true
 import config
 import mysql.connector
 import datetime
@@ -27,6 +28,9 @@ def index():
 
 @app.route('/user/register', methods=['POST'])
 def register():
+    ##  Paramètres
+    ##  Obligatoire : email, username, password
+    ##  Optionnel : nom, prenom
 
     #Récupération des paramètres de la requete
     if 'email' in request.form and 'username' in request.form and 'password' in request.form:
@@ -101,26 +105,46 @@ def register():
         return jsonify({ 'error' : 'mysql_connector. Error : ' + str(err)})
 
 
+@app.route('/user/login', methods=['POST'])
+def login():
+    ## Paramètres : 
+    ## username, password
 
+    ## Test pour savoir si les parametres sont bien passés
+    if 'username' in request.form and 'password' in request.form:
+        username = request.form["username"]
+        password = request.form["password"]
+    else:
+        return jsonify({ 'error' : 'Login Error : No username or password'})
 
-    
-@app.route('/bdd/wallet', methods=['GET'])
-def get():
+    ## Verification de l'existence d'un utilisateur
     try:
+        params = []
+        requete = "SELECT id,password FROM utilisateur WHERE username=%s"
+        params.append(username)
         with mysql.connector.connect(**connection_params) as db :
             with db.cursor() as c:
                 c.execute(requete, params)
-                results =  c.fetchall()
-                if results :
-                    return jsonify(results) 
-                else :
-                    return jsonify()
-
+                user =  c.fetchall()
+                if not(id):
+                    return jsonify({ 'error' : 'Login Error : Username not found'})
     except Exception as err:
         return jsonify({ 'error' : 'mysql_connector. Error : ' + str(err)})
-        
+    
+    ## Check si un seul utilisateur existe avec cet username
+    if len(user!=1):
+        return jsonify({ 'error' : 'Login Error : Internal error'})
+
+    ## Vérification du mot de passe    
+    if sha256_crypt.verify(password,user[0][1]):
+        return jsonify({ 'Connected' : 'true'})
+    else : 
+        return jsonify({ 'error' : 'Login Error : Bad Password'})
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-
+    
 
