@@ -33,6 +33,7 @@ def index():
 
 @jwt.revoked_token_loader
 @jwt.expired_token_loader
+## Fonction permettant de gérer une session avec un token expiré
 def expired_token(jwt_header, jwt_payload):
     return make_response(jsonify({
         'header': jwt_header,
@@ -45,6 +46,7 @@ def expired_token(jwt_header, jwt_payload):
 
 @jwt.unauthorized_loader
 @jwt.invalid_token_loader
+## Fonction permettant de gerer un requete avec un utilisateur non connecté
 def invalid_token(jwt_reason):
     return make_response(jsonify({
         'msg' : jwt_reason,
@@ -52,12 +54,13 @@ def invalid_token(jwt_reason):
         }),
         401)
 
-app.config["JWT_COOKIE_SECURE"] = False
-app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-app.config["JWT_SECRET_KEY"] = config.secret
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=10)
+## Config
+app.config["JWT_COOKIE_SECURE"] = False             
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]      ## Enregistrement du token de session dans les cookies
+app.config["JWT_SECRET_KEY"] = config.secret        ## Clé privée permettant de générer les token
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=10)     ## Durée de vie du token
 
-app.config['JSON_AS_ASCII'] = False
+app.config['JSON_AS_ASCII'] = False                 ## Permet d'utiliser les accents dans les reponse JSON
 
 if __name__ == "__main__":
     import test
