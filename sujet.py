@@ -6,6 +6,7 @@ from unittest import result
 from flask import Flask,jsonify, request, make_response
 from sqlalchemy import true
 import config
+import sql_connector
 import mysql.connector
 import datetime
 import re
