@@ -194,7 +194,7 @@ def login():
     ## Création access token
     access_token = create_access_token(identity=user_id)
     set_access_cookies(response, access_token)
-    return response
+    return make_response(response,200)
 
 
 ## Permet la déconnection
@@ -219,4 +219,4 @@ def user():
     user = sql_connector.get_user_info(id)
     response = jsonify({
         'user' : user})
-    return response
+    return make_response(response,200)
