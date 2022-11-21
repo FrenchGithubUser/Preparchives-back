@@ -48,14 +48,14 @@ def expired_token(jwt_header, jwt_payload):
 def invalid_token(jwt_reason):
     return make_response(jsonify({
         'msg' : jwt_reason,
-        'error' : "La session n'est pas valide"
+        'error' : "Vous n'etes pas connecté"
         }),
         401)
 
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_SECRET_KEY"] = config.secret
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=10)
 
 app.config['JSON_AS_ASCII'] = False
 

@@ -4,7 +4,6 @@ from crypt import methods
 import os
 from unittest import result
 from flask import Flask,jsonify, request, make_response
-from sqlalchemy import true
 import config
 import mysql.connector
 import sql_connector
@@ -119,13 +118,13 @@ def register():
              'error' : 'mysql_connector.Error : ' + str(err)
             }),
             500)
-    user_id = sql_connector.get_user_id(username)['id']
+    user_id = sql_connector.get_user_id(username)
     response =  make_response(jsonify({
-        'Registered' : true,
-        'user' : sql_connector.get_user_info(user_id)
+        'Registered' : True,
+        'user' : sql_connector.get_user_info(user_id['id'])
         }),
         200)
-    access_token = create_access_token(identity=user_id)
+    access_token = create_access_token(identity=user_id['id'])
     set_access_cookies(response, access_token)
     return response
 
@@ -141,8 +140,11 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
     else:
-        return jsonify({ 'error' : 'Erreur lors de la connection : username ou mot de passe manquant'})
-
+        return make_response(jsonify({
+            'Connected' : False,
+            'error' : 'Erreur lors de la connection : username ou mot de passe manquant'
+            }),
+            401)
     ## Verification de l'existence d'un utilisateur
     try:
         params = []
@@ -152,18 +154,69 @@ def login():
             with db.cursor() as c:
                 c.execute(requete, params)
                 user =  c.fetchall()
-                if not(id):
-                    return jsonify({ 'error' : 'Erreur lors de la connection : Username non trouvé'})
+                if not(user):
+                    return make_response(jsonify({
+                        'Connected' : False,
+                        'error' : 'Erreur lors de la connection : Username non trouvé'
+                        }),
+                        404)
     except Exception as err:
-        return jsonify({ 'error' : 'mysql_connector. Error : ' + str(err)})
+        return make_response(jsonify({
+                        'Connected' : False,
+                        'error' : 'mysql_connector. Error : ' + str(err)
+                        }),
+                        500)
     
     ## Check si un seul utilisateur existe avec cet username
     if len(user)!=1:
-        return jsonify({ 'error' : 'Erreur lors de la connection : Internal error'})
+        return make_response(jsonify({
+                        'Connected' : False,
+                        'error' : 'Erreur lors de la connection : Internal error'
+                        }),
+                        500)
 
     ## Vérification du mot de passe    
-    if sha256_crypt.verify(password,user[0][1]):
-        return jsonify({ 'Connected' : True})
-    else : 
-        return jsonify({ 'error' : 'Erreur lors de la connection : Mot de passe incorrect'})
+    if not(sha256_crypt.verify(password,user[0][1])):
+        return make_response(jsonify({
+                        'Connected' : False,
+                        'error' : 'Erreur lors de la connection : Mot de passe incorrect'
+                        }),
+                        401)
 
+    ## Utilisateur connecté
+    user_id = user[0][0]
+    response =  make_response(jsonify({
+        'Connected' : True,
+        'user' : sql_connector.get_user_info(user_id)
+        }),
+        200)
+
+    ## Création access token
+    access_token = create_access_token(identity=user_id)
+    set_access_cookies(response, access_token)
+    return response
+
+
+## Permet la déconnection
+@app.route("/user/logout", methods=["GET"])
+@jwt_required()
+def logout():
+    id = get_jwt_identity()
+    user = sql_connector.get_user_info(id)
+    response = jsonify({
+        'Connected' : False,
+        'msg' : 'logout successful',
+        'user' : user})
+    unset_jwt_cookies(response)
+    return response
+
+
+## Permet de récupérer les infos sur l'utilisateur connecté
+@app.route("/user", methods=["GET"])
+@jwt_required()
+def user():
+    id = get_jwt_identity()
+    user = sql_connector.get_user_info(id)
+    response = jsonify({
+        'user' : user})
+    return response
