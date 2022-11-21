@@ -7,10 +7,17 @@ from flask import Flask,jsonify, request, make_response
 from sqlalchemy import true
 import config
 import mysql.connector
+import sql_connector
 import datetime
 import re
-import jwt          ##      https://www.bacancytechnology.com/blog/flask-jwt-authentication
 from passlib.hash import sha256_crypt  ##      https://pythonprogramming.net/password-hashing-flask-tutorial/
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import unset_jwt_cookies
 
 connection_params = {
         'host' : config.host_db,
@@ -30,12 +37,15 @@ def register():
     if 'email' in request.form and 'username' in request.form and 'password' in request.form:
         email = request.form["email"]
         username = request.form["username"]
-        password = sha256_crypt.encrypt(request.form["password"])
+        password = sha256_crypt.encrypt(request.form["password"])       ## Hashage du password
 
 
     else:
-        return jsonify({ 'error' : 'Erreur lors de la création de compte : Email, mot de passe ou username manquant'})
-
+        return make_response(jsonify({
+            'Registered' : False,
+            'error' : 'Erreur lors de la création de compte : Email, mot de passe ou username manquant'
+            }),
+            401)
     ## Test Pour savoir si l'email à un format valide
     pattern = "^\S+@\S+\.\S+$"
     objs = re.search(pattern, email)
@@ -43,8 +53,11 @@ def register():
         if objs.string == email:
             pass
     except:
-        return jsonify({ 'error' : 'Erreur lors de la création de compte : Mauvais email'})
-
+        return make_response(jsonify({
+            'Registered' : False,
+            'error' : 'Erreur lors de la création de compte : Mauvais email'
+            }),
+            401)
     ## Test pour savoir si un email ou un username sont déja utilisés
     try:
         params = []
@@ -56,10 +69,17 @@ def register():
                 c.execute(requete, params)
                 results =  c.fetchall()
                 if results:
-                    return jsonify({ 'error' : 'Erreur lors de la création de compte : utilisateur ou email déjà utilisé'})
+                    return make_response(jsonify({
+                        'Registered' : False,
+                        'error' : 'Erreur lors de la création de compte : utilisateur ou email déjà utilisé'
+                        }),
+                        401)
     except Exception as err:
-        return jsonify({ 'error' : 'mysql_connector. Error : ' + str(err)})
-
+        return make_response(jsonify({
+            'Registered' : False,
+             'error' : 'mysql_connector.Error : ' + str(err)
+            }),
+            500)
 
     ## Cas ou le nom et le prénom ne sont pas fournis
     if not('nom' in request.form) and not('prenom' in request.form):
@@ -93,10 +113,22 @@ def register():
             with db.cursor() as c:
                 c.execute(requete, params)
                 db.commit()
-                return jsonify('true')
-
     except Exception as err:
-        return jsonify({ 'error' : 'mysql_connector.Error : ' + str(err)})
+        return make_response(jsonify({
+            'Registered' : False,
+             'error' : 'mysql_connector.Error : ' + str(err)
+            }),
+            500)
+    user_id = sql_connector.get_user_id(username)['id']
+    response =  make_response(jsonify({
+        'Registered' : true,
+        'user' : sql_connector.get_user_info(user_id)
+        }),
+        200)
+    access_token = create_access_token(identity=user_id)
+    set_access_cookies(response, access_token)
+    return response
+
 
 
 @app.route('/user/login', methods=['POST'])
@@ -131,7 +163,7 @@ def login():
 
     ## Vérification du mot de passe    
     if sha256_crypt.verify(password,user[0][1]):
-        return jsonify({ 'Connected' : 'true'})
+        return jsonify({ 'Connected' : True})
     else : 
         return jsonify({ 'error' : 'Erreur lors de la connection : Mot de passe incorrect'})
 
