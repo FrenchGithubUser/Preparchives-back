@@ -13,6 +13,24 @@ import re
 import jwt          ##      https://www.bacancytechnology.com/blog/flask-jwt-authentication
 from passlib.hash import sha256_crypt  ##      https://pythonprogramming.net/password-hashing-flask-tutorial/
 
+
+## https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/#implicit-refreshing-with-cookies
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import unset_jwt_cookies
+
+
+jwt_ = JWTManager(app)
+
+app.config["JWT_COOKIE_SECURE"] = False
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config["JWT_SECRET_KEY"] = config.secret
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=1)
+
 @app.route('/test/token', methods=['GET'])
 def token():
     token = jwt.encode({'user_id' : 7,
@@ -42,3 +60,43 @@ def verify(*args, **kwargs):
             return make_response(jsonify('Error : La session est compromise'), 401)
  
         return jsonify(data)
+
+
+
+
+@app.route("/test/protected")
+@jwt_required()
+def protected():
+    claims = get_jwt()
+    return jsonify(claims)
+
+
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.datetime.now(datetime.timezone.utc)
+        target_timestamp = datetime.datetime.timestamp(now+ datetime.timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original response
+        return response
+
+
+@app.route("/test/login", methods=["GET"])
+def login_():
+    response = jsonify({"msg": "login successful"})
+    additional_claims = {"aud": "some_audience", "foo": "bar"}
+    access_token = create_access_token(identity=7, additional_claims=additional_claims)
+    set_access_cookies(response, access_token)
+    return response
+
+
+@app.route("/test/logout", methods=["GET"])
+def logout_():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
