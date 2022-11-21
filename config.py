@@ -1,12 +1,12 @@
-host_db = "212.227.188.157"
+host_db = "DB HOST"
 user_db =  "preparchive"
 port_db = '3306'
-password_db = "lounis"
+password_db = "DB PASSWORD"
 database = "preparchive"
 
 
 subject_folder = 'files/'
 
-secret = 'ac71391ccccaa0a288f63b51c3d0c824'
+secret = 'SECRET'
 
 port = 5000
