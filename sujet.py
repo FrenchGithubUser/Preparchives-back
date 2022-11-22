@@ -374,6 +374,7 @@ def get_sujet_info():
             with db.cursor() as c:
                 c.execute(requete, params)
                 result =  c.fetchone()
+        username = sql_connector.get_user_info(result[8])['username']
         return jsonify({
             'id' : result[0],
             'matiere' : result[1],
@@ -381,8 +382,9 @@ def get_sujet_info():
             'epreuve' : result[3],
             'concours' : result[4],
             'annee' : result[5],
-            'date_ajout' : result[6],
-            'ecrit' : result[7]
+            'ecrit' : result[6],
+            'date_ajout' : result[7],
+            'username' : username
         })
     except Exception as err:
         return make_response(jsonify({
