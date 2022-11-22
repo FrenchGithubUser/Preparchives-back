@@ -113,7 +113,7 @@ def ajout_correction():
 
     ## Ajout du fichier dans le dossier
     filename = str(id) + ".pdf"
-    file.save(os.path.join(config.subject_folder + filename))
+    file.save(os.path.join(config.correction_folder + filename))
     return make_response(jsonify({
             'Published' : True,
             'filename' : filename,
