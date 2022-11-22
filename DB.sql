@@ -4,7 +4,7 @@ USE preparchive;
 CREATE TABLE utilisateur (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 username VARCHAR(50) NOT NULL,
-password VARCHAR(50) NOT NULL,
+password VARCHAR(256) NOT NULL,
 nom VARCHAR(50),
 prenom VARCHAR(50),
 email VARCHAR(50) NOT NULL,
@@ -15,8 +15,8 @@ date_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 CREATE TABLE sujet (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 matiere ENUM ('Mathematiques', 'Physique','Chimie', 'Anglais', 'Français-Philo') NOT NULL,
-epreuve ENUM ('MPSI', 'PCSI','PTSI', 'MP','PC', 'PSI','PT') NOT NULL,
-filiaire ENUM ('a', 'b', 'c') NOT NULL,
+filiaire ENUM ('MPSI', 'PCSI','PTSI', 'MP','PC', 'PSI','PT') NOT NULL,
+epreuve ENUM ('a', 'b', 'c') NOT NULL,
 concours VARCHAR(255) NOT NULL,
 annee INT NOT NULL,
 ecrit BOOLEAN NOT NULL,

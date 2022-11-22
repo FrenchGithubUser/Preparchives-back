@@ -26,8 +26,8 @@ connection_params = {
 
 ## Tableaux Enum
 Matiere_enum = ['Mathematiques','Physique','Chimie','Anglais','Français-Philo']
-Epreuve_enum = ['MPSI','PCSI','PTSI','MP','PC','PSI','PT']
-Filiaire_enum = ['a','b','c']
+Filiaire_enum = ['MPSI','PCSI','PTSI','MP','PC','PSI','PT']
+Epreuve_enum = ['a','b','c']
 
 ## Methode pour poster un sujet
 @app.route('/sujet', methods=['POST'])
@@ -195,3 +195,29 @@ def ajout_sujet():
             'sujet' : request.form
             }),
             200)
+
+
+
+@app.route('/sujet/search', methods=['GET'])
+@jwt_required()
+def search_sujet():
+    requete = 'SELECT * FROM sujet'
+    params = []
+    if len(request.args)== 0:
+        pass
+    else:
+        requete = requete + ' where '
+    if 'matiere' in request.args:
+        requete = requete + ' matiere = %s '
+        params.append(request.args['matiere'])
+
+    try:
+        with mysql.connector.connect(**connection_params) as db :
+            with db.cursor() as c:
+                c.execute(requete, params)
+                results =  c.fetchall()
+
+    except Exception as err:
+        return  'error : mysql_connector. Error : ' + str(err)
+
+    return jsonify(results)
