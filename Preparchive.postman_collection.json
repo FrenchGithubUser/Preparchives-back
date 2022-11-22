@@ -1,0 +1,287 @@
+{
+	"info": {
+		"_postman_id": "5ee1eb54-b98e-457c-b7dd-c92a037dadb3",
+		"name": "Preparchive",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "15246815"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Arnaud6",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "lounis",
+							"type": "text"
+						},
+						{
+							"key": "prenom",
+							"value": "Arnaud",
+							"type": "text"
+						},
+						{
+							"key": "nom",
+							"value": "Fétard",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "a.b@c.d3",
+							"type": "text"
+						}
+					]
+				},
+				"url": "127.0.0.1:5000/user/register"
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Arnaud6",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "lounis",
+							"type": "text"
+						},
+						{
+							"key": "prenom",
+							"value": "thomas",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "nom",
+							"value": "traineau",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "t.loun@test.fre",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": "127.0.0.1:5000/user/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Sujet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/malo/UTC/AE01/Planning_AE01_A21.pdf"
+						},
+						{
+							"key": "matiere",
+							"value": "Mathematiques",
+							"type": "text"
+						},
+						{
+							"key": "epreuve",
+							"value": "MPSI",
+							"type": "text"
+						},
+						{
+							"key": "filiaire",
+							"value": "a",
+							"type": "text"
+						},
+						{
+							"key": "concours",
+							"value": "Test Concours",
+							"type": "text"
+						},
+						{
+							"key": "annee",
+							"value": "2022a",
+							"type": "text"
+						},
+						{
+							"key": "ecrit",
+							"value": "0",
+							"type": "text"
+						}
+					]
+				},
+				"url": "127.0.0.1:5000/sujet"
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/malo/UTC/AI03/TPD1.c",
+							"disabled": true
+						}
+					]
+				},
+				"url": "127.0.0.1:5000/user/logout"
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/malo/UTC/AI03/TPD1.c",
+							"disabled": true
+						}
+					]
+				},
+				"url": "127.0.0.1:5000/user"
+			},
+			"response": []
+		},
+		{
+			"name": "test - token",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/malo/UTC/AI03/TPD1.c",
+							"disabled": true
+						}
+					]
+				},
+				"url": "127.0.0.1:5000/test/token"
+			},
+			"response": []
+		},
+		{
+			"name": "test - decrypt",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-tokens",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo3LCJleHAiOjE2NjkwMjY3MTIsImlhdCI6MTY2OTAyNjY1Mn0.NCok2IwMAF2ViZUz2d-wDQD3JC134YSDP_nAfgMU4Ik",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/malo/UTC/AI03/TPD1.c",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:5000/test/decrypt",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"test",
+						"decrypt"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test - protected",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/malo/UTC/AI03/TPD1.c",
+							"disabled": true
+						}
+					]
+				},
+				"url": "127.0.0.1:5000/test/protected"
+			},
+			"response": []
+		}
+	]
+}
