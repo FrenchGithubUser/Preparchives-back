@@ -15,7 +15,7 @@ date_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 CREATE TABLE sujet (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 matiere ENUM ('Mathematiques', 'Physique','Chimie', 'Anglais', 'Français-Philo') NOT NULL,
-filiaire ENUM ('MPSI', 'PCSI','PTSI', 'MP','PC', 'PSI','PT') NOT NULL,
+filiere ENUM ('MPSI', 'PCSI','PTSI', 'MP','PC', 'PSI','PT') NOT NULL,
 epreuve ENUM ('a', 'b', 'c') NOT NULL,
 concours VARCHAR(255) NOT NULL,
 annee INT NOT NULL,

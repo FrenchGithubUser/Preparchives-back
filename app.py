@@ -68,7 +68,7 @@ def not_found(e):
 app.config["JWT_COOKIE_SECURE"] = False             
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]      ## Enregistrement du token de session dans les cookies
 app.config["JWT_SECRET_KEY"] = config.secret        ## Clé privée permettant de générer les token
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=10)     ## Durée de vie du token
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=60)     ## Durée de vie du token
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 app.config['JSON_AS_ASCII'] = False                 ## Permet d'utiliser les accents et caractères UTF-8 dans les reponse JSON
