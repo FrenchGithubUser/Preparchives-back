@@ -1,7 +1,7 @@
 from __main__ import app
 
 import os
-from flask import Flask,jsonify, request, make_response
+from flask import Flask,jsonify, request, make_response, send_file
 import config
 import sql_connector
 import mysql.connector
@@ -96,8 +96,8 @@ def ajout_correction():
                     VALUES(%s,%s,%s)\
                     returning id"
         params.append(credit)
-        params.append(id_sujet)
         params.append(user_id)
+        params.append(id_sujet)
 
         with mysql.connector.connect(**connection_params) as db :
             with db.cursor() as c:
@@ -120,3 +120,71 @@ def ajout_correction():
             'sujet' : request.form
             }),
             200)
+
+
+## Methode pour poster un sujet
+@app.route('/correction/info', methods=['GET'])
+@jwt_required()
+def get_correction_info():
+
+    if 'id_correction' in request.args:
+        id_correction = request.args["id_correction"]
+
+        if sql_connector.is_correction_existing(id_correction):
+            
+            correction_info = sql_connector.get_correction_info(id_correction)
+
+            try:
+                correction_info["error"]
+                return make_response(jsonify({
+                'Published' : False,
+                'error' : 'La correction demandee n\'existe pas'
+                }),
+                400)
+
+            except:
+                credit = correction_info["credit"]
+                utilisateur =  sql_connector.get_user_info(correction_info["id_utilisateur"])
+                date_correction = correction_info["date_correction"]
+                pseudo_utilisateur = utilisateur["username"]
+
+            return make_response(jsonify({
+                'credit' : credit,
+                'username' : pseudo_utilisateur,
+                'date_correction' : date_correction
+            }))
+
+
+        else:
+            return make_response(jsonify({
+                'Published' : False,
+                'error' : 'La correction demandee n\'existe pas'
+                }),
+                400)
+
+    else:
+        return make_response(jsonify({
+                'Published' : False,
+                'error' : 'Erreur de chargement des informations de la correction'
+                }),
+                400)
+
+
+@app.route('/correction/pdf', methods=['GET'])
+@jwt_required()
+def get_correction_pdf():
+    if 'id' in request.args:
+        correction_id = request.args['id']
+    else:
+        return make_response(jsonify({
+                'error' : 'Erreur lors de l\'affichage d\'une correction: L\'identifiant n\'est pas trouvé'
+                }),
+                400)
+
+    if sql_connector.is_correction_existing(correction_id):
+        return send_file(path_or_file=config.correction_folder + correction_id + ".pdf")
+    else:
+        return make_response(jsonify({
+                'error' : 'Erreur lors de l\'affichage d\'une correction: La correction n\'existe pas'
+                }),
+                400)

@@ -70,8 +70,48 @@ def is_subject_existing(id):
         else:
             return False
 
-            
+    except Exception as err:
+        return  'error : mysql_connector. Error : ' + str(err)
 
+
+def is_correction_existing(id):
+    try:
+
+        params = []
+        requete = "SELECT id FROM correction where id =%s"
+        params.append(id)
+
+        with mysql.connector.connect(**connection_params) as db :
+            with db.cursor() as c:
+                c.execute(requete, params)
+                results = c.fetchone()
+                
+        if results:
+            return True
+        else:
+            return False
 
     except Exception as err:
         return  'error : mysql_connector. Error : ' + str(err)
+
+
+def get_correction_info(id):
+    try:
+        params = []
+        requete = "SELECT id_utilisateur, credit, date_correction FROM correction WHERE id=%s"
+        params.append(id)
+        with mysql.connector.connect(**connection_params) as db :
+            with db.cursor() as c:
+                c.execute(requete, params)
+                results =  c.fetchone()
+        pretty_results = {}
+        if results:
+            pretty_results['id_utilisateur'] = results[0]
+            pretty_results['credit'] = results[1]
+            pretty_results['date_correction'] = results[2]
+        else: 
+            pretty_results['error'] = "Correction non trouvée"
+        return pretty_results
+
+    except Exception as err:
+        return  'error : mysql_connector. Error : ' + str(err)       
