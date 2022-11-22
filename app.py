@@ -77,6 +77,7 @@ if __name__ == "__main__":
     import test
     import user
     import sujet
+    import correction
     app.run(debug=True, port=config.port)
     
 

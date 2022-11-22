@@ -52,3 +52,26 @@ def get_user_id(username):
         return pretty_results
     except Exception as err:
         return  'error : mysql_connector. Error : ' + str(err)
+
+def is_subject_existing(id):
+    try:
+
+        params = []
+        requete = "SELECT id FROM sujet where id =%s"
+        params.append(id)
+
+        with mysql.connector.connect(**connection_params) as db :
+            with db.cursor() as c:
+                c.execute(requete, params)
+                results = c.fetchone()
+                
+        if results:
+            return True
+        else:
+            return False
+
+            
+
+
+    except Exception as err:
+        return  'error : mysql_connector. Error : ' + str(err)
