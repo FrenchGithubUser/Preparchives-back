@@ -2,7 +2,6 @@ from __main__ import app
 
 from crypt import methods
 import os
-from unittest import result
 from flask import Flask,jsonify, request, make_response
 import config
 import mysql.connector

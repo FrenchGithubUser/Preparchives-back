@@ -14,11 +14,11 @@ date_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 
 CREATE TABLE sujet (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-matiere ENUM ('Mathématiques', 'Physique','Chimie', 'Anglais', 'Français-Philo') NOT NULL,
+matiere ENUM ('Mathematiques', 'Physique','Chimie', 'Anglais', 'Français-Philo') NOT NULL,
 epreuve ENUM ('MPSI', 'PCSI','PTSI', 'MP','PC', 'PSI','PT') NOT NULL,
 filiaire ENUM ('a', 'b', 'c') NOT NULL,
 concours VARCHAR(255) NOT NULL,
-annee DATE NOT NULL,
+annee INT NOT NULL,
 ecrit BOOLEAN NOT NULL,
 date_ajout TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 id_utilisateur INT NOT NULL,
