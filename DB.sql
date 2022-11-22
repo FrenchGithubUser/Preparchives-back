@@ -56,11 +56,11 @@ type_signalement ENUM ('insulte', 'contenue', 'autre') NOT NULL,
 
 id_utilisateur int NOT NULL,
 CONSTRAINT FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id),
-id_sujet int NOT NULL,
+id_sujet int,
 CONSTRAINT FOREIGN KEY (id_sujet) REFERENCES sujet(id),
-id_correction int NOT NULL,
+id_correction int,
 CONSTRAINT FOREIGN KEY (id_correction) REFERENCES correction(id),
-id_commentaire int NOT NULL,
+id_commentaire int,
 CONSTRAINT FOREIGN KEY (id_commentaire) REFERENCES commentaire(id),
 
 CHECK( (id_sujet IS NULL AND id_correction IS NULL AND id_commentaire IS NOT NULL) OR  (id_sujet IS NULL AND id_correction IS NOT NULL AND id_commentaire IS NULL) OR (id_sujet IS NOT NULL AND id_correction IS NULL AND id_commentaire IS NULL))
