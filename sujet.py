@@ -1,7 +1,7 @@
 from __main__ import app
 
 import os
-from flask import Flask,jsonify, request, make_response
+from flask import Flask,jsonify, request, make_response, send_file
 import config
 import sql_connector
 import mysql.connector
@@ -327,3 +327,57 @@ def search_sujet():
     return make_response(
         jsonify(pretty_result),
         200)
+
+
+@app.route('/sujet/pdf', methods=['GET'])
+@jwt_required()
+def get_sujet_pdf():
+    if 'id' in request.args:
+        sujet_id = request.args['id']
+    else:
+        return make_response(jsonify({
+                'error' : 'Erreur lors de l\'affichage d\'un sujet: L\'identifiant n\'est pas trouvé'
+                }),
+                400)
+    if sql_connector.is_subject_existing(sujet_id):
+        return send_file(path_or_file=config.subject_folder + sujet_id + ".pdf")
+    else:
+        return make_response(jsonify({
+                'error' : 'Erreur lors de l\'affichage d\'un sujet: Le sujet n\'existe pas'
+                }),
+                400)
+
+
+@app.route('/sujet/info', methods=['GET'])
+@jwt_required()
+def get_sujet_info():
+    if 'id' in request.args:
+        sujet_id = request.args['id']
+    else:
+        return make_response(jsonify({
+                'error' : 'Erreur lors de l\'affichage d\'un sujet: L\'identifiant n\'est pas trouvé'
+                }),
+                400)
+    if sql_connector.is_subject_existing(sujet_id):
+        pass
+    else:
+        return make_response(jsonify({
+                'error' : 'Erreur lors de l\'affichage d\'un sujet: Le sujet n\'existe pas'
+                }),
+                400)
+
+    requete = 'SELECT * FROM sujet where id=%s'
+    params = []
+    params.append(sujet_id)
+    try:
+        with mysql.connector.connect(**connection_params) as db :
+            with db.cursor() as c:
+                c.execute(requete, params)
+                result =  c.fetchone()
+        return result
+    except Exception as err:
+        return make_response(jsonify({
+             'error' : 'mysql_connector.Error : ' + str(err)
+            }),
+            500)
+
