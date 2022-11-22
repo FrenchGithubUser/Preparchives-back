@@ -3,4 +3,4 @@
 
 ## Endpoints
 
- - /user/register __POST__
+ - /user/register **POST**
