@@ -117,7 +117,7 @@ def ajout_correction():
     return make_response(jsonify({
             'Published' : True,
             'filename' : filename,
-            'sujet' : request.form
+            'Correction' : request.form
             }),
             200)
 

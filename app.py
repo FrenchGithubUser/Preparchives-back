@@ -93,6 +93,7 @@ if __name__ == "__main__":
     import user
     import sujet
     import correction
+    import commentaire
     app.run(debug=True, port=config.port)
     
 
