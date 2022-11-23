@@ -447,3 +447,53 @@ def get_corrections_from_sujet():
             'error' : 'Erreur lors de a récupération des corrections: L\identifiant du sujet n\'est pas fourni'
             }),
             400)
+
+
+## Methode pour recupérer la liste de correction d'un sujet
+@app.route('/sujet/commentaire', methods=['GET'])
+@jwt_required()
+def get_commentaire_from_sujet():
+
+    if 'id' in request.args:
+        id_sujet = request.args["id"]
+
+        if sql_connector.is_subject_existing(id_sujet):
+            requete = "SELECT * from commentaire where id_sujet=%s"    
+            params = []
+            params.append(id_sujet)
+            try:
+                with mysql.connector.connect(**connection_params) as db :
+                    with db.cursor() as c:
+                        c.execute(requete, params)
+                        results =  c.fetchall()
+    
+            except Exception as err:
+                return make_response(jsonify({
+                    'error' : 'mysql_connector.Error : ' + str(err)
+                    }),
+                    500)
+            nb_results = len(results)
+            pretty_result = []
+            for i in range (0,nb_results):
+                result_dictionnary = {}
+                result_dictionnary['id_sujet'] = results[i][0]
+                result_dictionnary['contenu'] = results[i][1]
+                result_dictionnary['date_ajout'] = results[i][2]
+                result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])['username']
+      
+                pretty_result.append(result_dictionnary)
+            return make_response(
+            jsonify(pretty_result),
+            200)
+        else:
+            return make_response(jsonify({
+                'error' : 'Erreur lors de a récupération des commentaires: Le commentaire n\'existe pas'
+                }),
+                400)
+
+    else:
+        return make_response(jsonify({
+            'error' : 'Erreur lors de a récupération des commentaire: L\identifiant du sujet n\'est pas fourni'
+            }),
+            400)
+
