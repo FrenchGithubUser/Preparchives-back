@@ -33,4 +33,28 @@
             - email - String
             - nom - String
             - prenom - String
-            - username
+            - username - String
+        - Token JWT en cookies
+
+ -  /user/logout **GET**
+    - No param
+    - Supprime le token jwt des cookies de l'utilisateur connecté
+    - Valeurs de retour :
+        - Connected : Booleen
+        - user (Si l'utilisateur a été bien été déconnecté - HTTP 200)
+            - date_creation - datetime
+            - email - String
+            - nom - String
+            - prenom - String
+            - username - String
+
+ - /user **GET**
+    - No param
+    - Revoie les infos sur l'utilisateur connecté
+    - Valeurs de retour :
+        - user
+            - date_creation - datetime
+            - email - String
+            - nom - String
+            - prenom - String
+            - username - String
