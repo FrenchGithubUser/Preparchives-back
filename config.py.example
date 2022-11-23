@@ -5,7 +5,8 @@ password_db = "DB PASSWORD"
 database = "preparchive"
 
 
-subject_folder = 'files/'
+subject_folder = 'sujet/'
+correction_folder = 'correction/'
 
 secret = 'SECRET'
 
