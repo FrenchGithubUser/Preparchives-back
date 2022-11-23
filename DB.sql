@@ -39,11 +39,14 @@ CONSTRAINT FOREIGN KEY (id_sujet) REFERENCES sujet(id)
 
 CREATE TABLE commentaire (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+contenu VARCHAR(1000) NOT NULL,
 date_commentaire TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-id_sujet int NOT NULL,
+id_sujet int ,
 CONSTRAINT FOREIGN KEY (id_sujet) REFERENCES sujet(id),
-id_correction int NOT NULL,
+id_correction int ,
 CONSTRAINT FOREIGN KEY (id_correction) REFERENCES correction(id),
+id_utilisateur int NOT NULL,
+CONSTRAINT FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id),
 CHECK ((id_sujet IS NULL OR id_correction IS NULL ) AND NOT ( id_sujet IS NULL AND id_correction IS NULL ) )
 );
 
