@@ -122,13 +122,13 @@ def ajout_correction():
             200)
 
 
-## Methode pour poster un sujet
+## Methode pour poster une correction
 @app.route('/correction/info', methods=['GET'])
 @jwt_required()
 def get_correction_info():
 
-    if 'id_correction' in request.args:
-        id_correction = request.args["id_correction"]
+    if 'id' in request.args:
+        id_correction = request.args["id"]
 
         if sql_connector.is_correction_existing(id_correction):
             
@@ -157,14 +157,12 @@ def get_correction_info():
 
         else:
             return make_response(jsonify({
-                'Published' : False,
                 'error' : 'La correction demandee n\'existe pas'
                 }),
                 400)
 
     else:
         return make_response(jsonify({
-                'Published' : False,
                 'error' : 'Erreur de chargement des informations de la correction'
                 }),
                 400)
@@ -182,9 +180,18 @@ def get_correction_pdf():
                 400)
 
     if sql_connector.is_correction_existing(correction_id):
-        return send_file(path_or_file=config.correction_folder + correction_id + ".pdf")
+        try:
+            return send_file(path_or_file=config.correction_folder + correction_id + ".pdf")
+        except:
+            return make_response(jsonify({
+                'error' : 'Erreur lors du chargement de la correction'
+                }),
+                400)
+            
     else:
         return make_response(jsonify({
                 'error' : 'Erreur lors de l\'affichage d\'une correction: La correction n\'existe pas'
                 }),
                 400)
+
+
