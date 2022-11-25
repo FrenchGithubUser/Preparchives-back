@@ -6,6 +6,7 @@
     - ```python3 -m pip install mysql-connector-python```
     - ```python3 -m pip install flask-jwt-extended```
     - ```python3 -m pip install Flask```
+    - ```python3 -m pip install passlib```
 
 
 ## Endpoints
