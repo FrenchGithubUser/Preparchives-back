@@ -33,6 +33,14 @@ def ajout_commentaire():
     #test présence de contenue
     if "contenu" in request.form:
         content = request.form["contenu"]
+        if len(content)>1000:
+            return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'un commentaire : contenu trop long (1000 caracteres max)'
+            }),
+            400)
+
+
     else:
         return make_response(jsonify({
             'Published' : False,

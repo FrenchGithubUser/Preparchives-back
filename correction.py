@@ -195,3 +195,50 @@ def get_correction_pdf():
                 400)
 
 
+## Methode pour recupérer la liste de correction d'un sujet
+@app.route('/corrections/commentaire', methods=['GET'])
+@jwt_required()
+def get_commentaire_from_correction():
+
+    if 'id' in request.args:
+        id_correction = request.args["id"]
+
+        if sql_connector.is_correction_existing(id_correction):
+            requete = "SELECT * from commentaire where id_correction=%s"    
+            params = []
+            params.append(id_correction)
+            try:
+                with mysql.connector.connect(**connection_params) as db :
+                    with db.cursor() as c:
+                        c.execute(requete, params)
+                        results =  c.fetchall()
+    
+            except Exception as err:
+                return make_response(jsonify({
+                    'error' : 'mysql_connector.Error : ' + str(err)
+                    }),
+                    500)
+            nb_results = len(results)
+            pretty_result = []
+            for i in range (0,nb_results):
+                result_dictionnary = {}
+                result_dictionnary['id_commentaire'] = results[i][0]
+                result_dictionnary['contenu'] = results[i][1]
+                result_dictionnary['date_ajout'] = results[i][2]
+                result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])['username']
+      
+                pretty_result.append(result_dictionnary)
+            return make_response(
+            jsonify(pretty_result),
+            200)
+        else:
+            return make_response(jsonify({
+                'error' : 'Erreur lors de a récupération des commentaires: Le commentaire n\'existe pas'
+                }),
+                400)
+
+    else:
+        return make_response(jsonify({
+            'error' : 'Erreur lors de a récupération des commentaire: L\identifiant de la correction n\'est pas fourni'
+            }),
+            400)
