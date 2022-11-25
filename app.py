@@ -6,6 +6,7 @@ from sqlalchemy import true
 import config
 import sql_connector
 from datetime import datetime, timezone, timedelta
+from flask_cors import CORS
 import re
 #import jwt          ##      https://www.bacancytechnology.com/blog/flask-jwt-authentication
 from passlib.hash import sha256_crypt  ##      https://pythonprogramming.net/password-hashing-flask-tutorial/
@@ -88,13 +89,15 @@ app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 app.config['JSON_AS_ASCII'] = False                 ## Permet d'utiliser les accents et caractères UTF-8 dans les reponse JSON
 
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
 if __name__ == "__main__":
     import test
     import user
     import sujet
     import correction
     import commentaire
-    app.run(debug=True, port=config.port)
+    app.run(debug=True, port=config.port, host='0.0.0.0')
     
 
 
