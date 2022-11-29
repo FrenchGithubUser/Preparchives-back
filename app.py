@@ -89,7 +89,7 @@ app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 app.config['JSON_AS_ASCII'] = False                 ## Permet d'utiliser les accents et caractères UTF-8 dans les reponse JSON
 
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 if __name__ == "__main__":
     import test
