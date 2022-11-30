@@ -86,6 +86,7 @@ app.config["JWT_TOKEN_LOCATION"] = ["cookies"]      ## Enregistrement du token d
 app.config["JWT_SECRET_KEY"] = config.secret        ## Clé privée permettant de générer les token
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=120)     ## Durée de vie du token
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
+app.config["JWT_COOKIE_SAMESITE"] = None
 
 app.config['JSON_AS_ASCII'] = False                 ## Permet d'utiliser les accents et caractères UTF-8 dans les reponse JSON
 
