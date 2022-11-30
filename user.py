@@ -33,9 +33,31 @@ def register():
 
     #Récupération des paramètres de la requete
     if 'email' in request.form and 'username' in request.form and 'password' in request.form:
+        
         email = request.form["email"]
+        if len(email)>50:
+            return make_response(jsonify({
+            'Registered' : False,
+            'error' : 'Erreur lors de la création de compte : L\'email est trop long'
+            }),
+            401)
+
         username = request.form["username"]
-        password = sha256_crypt.encrypt(request.form["password"])       ## Hashage du password
+        if len(username)>50:
+            return make_response(jsonify({
+            'Registered' : False,
+            'error' : 'Erreur lors de la création de compte : Le username est trop long'
+            }),
+            401)
+
+        password = sha256_crypt.encrypt(request.form["password"])       
+        ## Hashage du password
+        if len(password)>255:
+            return make_response(jsonify({
+            'Registered' : False,
+            'error' : 'Erreur lors de la création de compte : Le mot de passe est trop long'
+            }),
+            401)
 
 
     else:
@@ -53,7 +75,7 @@ def register():
     except:
         return make_response(jsonify({
             'Registered' : False,
-            'error' : 'Erreur lors de la création de compte : Mauvais email'
+            'error' : 'Erreur lors de la création de compte : Email invalide'
             }),
             401)
     ## Test pour savoir si un email ou un username sont déja utilisés
