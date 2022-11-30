@@ -122,9 +122,8 @@ def ajout_correction():
             200)
 
 
-## Methode pour poster une correction
+## Methode pour obtenir les info d'une correction
 @app.route('/correction/info', methods=['GET'])
-@jwt_required()
 def get_correction_info():
 
     if 'id' in request.args:
@@ -169,7 +168,6 @@ def get_correction_info():
 
 
 @app.route('/correction/pdf', methods=['GET'])
-@jwt_required()
 def get_correction_pdf():
     if 'id' in request.args:
         correction_id = request.args['id']

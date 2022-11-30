@@ -199,7 +199,6 @@ def ajout_sujet():
 
 
 @app.route('/sujet/search', methods=['GET'])
-@jwt_required()
 def search_sujet():
     requete = 'SELECT * FROM sujet'
     params = []
@@ -330,7 +329,6 @@ def search_sujet():
 
 
 @app.route('/sujet/pdf', methods=['GET'])
-@jwt_required()
 def get_sujet_pdf():
     if 'id' in request.args:
         sujet_id = request.args['id']
@@ -355,7 +353,6 @@ def get_sujet_pdf():
 
 
 @app.route('/sujet/info', methods=['GET'])
-@jwt_required()
 def get_sujet_info():
     if 'id' in request.args:
         sujet_id = request.args['id']
@@ -402,7 +399,6 @@ def get_sujet_info():
 
 ## Methode pour recupérer la liste de correction d'un sujet
 @app.route('/sujet/corrections', methods=['GET'])
-@jwt_required()
 def get_corrections_from_sujet():
 
     if 'id' in request.args:

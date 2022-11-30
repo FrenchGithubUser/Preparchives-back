@@ -184,14 +184,16 @@ def login():
 
     ## Utilisateur connecté
     user_id = user[0][0]
-    response =  make_response(jsonify({
-        'Connected' : True,
-        'user' : sql_connector.get_user_info(user_id)
-        }),
-        200)
+    
 
     ## Création access token
     access_token = create_access_token(identity=user_id)
+    response =  make_response(jsonify({
+        'Connected' : True,
+        'user' : sql_connector.get_user_info(user_id),
+        'access_token' : access_token
+        }),
+        200)
     set_access_cookies(response, access_token)
     return make_response(response,200)
 
