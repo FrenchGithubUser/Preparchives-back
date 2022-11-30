@@ -311,16 +311,47 @@ def search_sujet():
     nb_results = len(results)
     pretty_result = []
     for i in range (0,nb_results):
+
+        print (results)
+
         result_dictionnary = {}
         result_dictionnary['id'] = results[i][0]
         result_dictionnary['matiere'] = results[i][1]
         result_dictionnary['filiere'] = results[i][2]
         result_dictionnary['epreuve'] = results[i][3]
         result_dictionnary['concours'] = results[i][4]
-        result_dictionnary['ecrit'] = results[i][5]
-        result_dictionnary['date_ajout'] = results[i][6]
-        result_dictionnary['id_utilisateur'] = results[i][7]
+        result_dictionnary['annee'] = results[i][5]
+        result_dictionnary['ecrit'] = results[i][6]
+        result_dictionnary['date_ajout'] = results[i][7]
+        result_dictionnary['id_utilisateur'] = results[i][8]    
+        
+
+
+        requete = "SELECT * from correction where id_sujet=%s"    
+        params = []
+        params.append(results[i][0])
+
+        try:
+            with mysql.connector.connect(**connection_params) as db :
+                with db.cursor() as c:
+                    c.execute(requete, params)
+                    correction =  c.fetchall()
+    
+        except Exception as err:
+            return make_response(jsonify({
+                'error' : 'mysql_connector.Error : ' + str(err)
+                }),
+                500)
+
+        if not correction :
+            result_dictionnary['has_correction'] = False
+        else :
+            result_dictionnary['has_correction'] = True
+
         pretty_result.append(result_dictionnary)
+
+
+        
     
 
     return make_response(
