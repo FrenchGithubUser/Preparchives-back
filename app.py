@@ -81,7 +81,7 @@ def refresh_expiring_jwts(response):
         return response
 
 ## Config
-app.config["JWT_COOKIE_SECURE"] = False             
+app.config["JWT_COOKIE_SECURE"] = True             
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]      ## Enregistrement du token de session dans les cookies
 app.config["JWT_SECRET_KEY"] = config.secret        ## Clé privée permettant de générer les token
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=120)     ## Durée de vie du token
