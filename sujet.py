@@ -202,100 +202,124 @@ def ajout_sujet():
 def search_sujet():
     requete = 'SELECT * FROM sujet'
     params = []
-    if len(request.args)== 0:
-        pass
-    else:
-        requete = requete + ' where '
 
     ## gestion du parametre matiere
     if 'matiere' in request.args:
         matiere = request.args['matiere']
-        if matiere in Matiere_enum:
-            requete = requete + ' matiere = %s '
-            params.append(matiere)
+
+        if matiere == "":
+            pass
         else:
-            return make_response(jsonify({
-                'Published' : False,
-                'error' : 'Erreur lors de la recherche d\'un sujet : Matiere non conforme'
-                }),
-                400)
+            if matiere in Matiere_enum:
+                requete = requete + ' where matiere = %s '
+                params.append(matiere)
+
+            else:
+                return make_response(jsonify({
+                    'Published' : False,
+                    'error' : 'Erreur lors de la recherche d\'un sujet : Matiere non conforme'
+                    }),
+                    400)
 
     ## Gestion du parametre filiere
     if 'filiere' in request.args:
         filiere = request.args['filiere']
-        if filiere in Filiere_enum:
-            if len(request.args) ==  1:
-                requete = requete + ' filiere = %s '
-            else:
-                if 'matiere' in request.args:
-                    requete = requete + ' and filiere = %s '
-                else:
-                    requete = requete + ' filiere = %s '
-            params.append(filiere)
+
+        if not filiere:
+            pass
+
         else:
-            return make_response(jsonify({
-                'Published' : False,
-                'error' : 'Erreur lors de la recherche d\'un sujet : Filiere non conforme'
-                }),
-                400)
+            if filiere in Filiere_enum:
+                if not matiere:
+                    requete = requete + ' where filiere = %s '
+                else:
+                    requete = requete + ' and filiere = %s '
+                params.append(filiere)
+            else:
+                return make_response(jsonify({
+                    'Published' : False,
+                    'error' : 'Erreur lors de la recherche d\'un sujet : Filiere non conforme'
+                    }),
+                    400)
 
     ## Gestion parametre epreuve
     if 'epreuve' in request.args:
         epreuve = request.args['epreuve']
-        if epreuve in Epreuve_enum:
-            if len(request.args) ==  1:
-                requete = requete + ' epreuve = %s '
-            else:
-                if 'matiere' in request.args or 'filiere' in request.args:
-                    requete = requete + ' and epreuve = %s '
-                else:
-                    requete = requete + ' epreuve = %s '
-            params.append(epreuve)
+        if not epreuve:
+            pass
+
         else:
-            return make_response(jsonify({
-                'Published' : False,
-                'error' : 'Erreur lors de la recherche d\'un sujet : Epreuve non conforme'
-                }),
-                400)
+            if epreuve in Epreuve_enum:
+                if not matiere and not filiere:
+                    requete = requete + ' where epreuve = %s '
+                else:
+                    requete = requete + ' and epreuve = %s '
+                params.append(epreuve)
+            else:
+                return make_response(jsonify({
+                    'Published' : False,
+                    'error' : 'Erreur lors de la recherche d\'un sujet : Epreuve non conforme'
+                    }),
+                    400)
 
      ## Gestion parametre epreuve
     if 'annee' in request.args:
-        try:
-            annee = int(request.args["annee"])
-        except:
-            return make_response(jsonify({
-                'Published' : False,
-                'error' : 'Erreur lors de la recherche d\'un sujet : L\'année n\'est pas un nombre'
-                }),
-                400)
+        
+        annee = request.args["annee"]
 
-        if len(request.args) ==  1:
-            requete = requete + ' annee = %s '
+        if not annee:
+            pass
         else:
-            if 'matiere' in request.args or 'filiere' in request.args or 'epreuve' in request.args:
-                requete = requete + ' and annee = %s '
+            try:
+                annee = int(request.args["annee"])
+            except:
+                return make_response(jsonify({
+                    'Published' : False,
+                    'error' : 'Erreur lors de la recherche d\'un sujet : L\'année n\'est pas un nombre'
+                    }),
+                    400)
+
+            if not matiere and not filiere and not epreuve:
+                requete = requete + ' where annee = %s '
             else:
-                requete = requete + ' annee = %s '
-        params.append(annee)
+                requete = requete + ' and annee = %s '
+                
+            params.append(annee)
         
      ## Gestion parametre ecrit
     if 'ecrit' in request.args:
-        ecrit = int(request.args["ecrit"])
-        if type(ecrit) == int and ecrit<=1 and ecrit>=0:
-            if len(request.args) ==  1:
-                requete = requete + ' ecrit = %s '
-            else:
-                if 'matiere' in request.args or 'filiere' in request.args or 'epreuve' in request.args or 'annee' in request.args:
-                    requete = requete + ' and ecrit = %s '
-                else:
-                    requete = requete + ' ecrit = %s '
-            params.append(ecrit)
+
+        ecrit = request.args["ecrit"]
+
+        if not ecrit:
+            pass
+
         else:
-            return make_response(jsonify({
+            ecrit = int(ecrit)
+
+            if type(ecrit) == int and ecrit<=1 and ecrit>=0:
+
+                if not matiere and not filiere and not epreuve and not annee:
+                    requete = requete + ' where ecrit = %s '
+                else:
+                        requete = requete + ' and ecrit = %s '
+                params.append(ecrit)
+
+            else:
+                return make_response(jsonify({
                 'Published' : False,
                 'error' : 'Erreur lors de l\'ajout d\'un sujet : Le type de concours n\'est pas conforme'
                 }),
                 400)
+
+
+    else:
+        return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'un sujet : Le type de concours n\'est pas présent (écrit ou oral)'
+            }),
+            400)
+
     try:
         with mysql.connector.connect(**connection_params) as db :
             with db.cursor() as c:
@@ -308,8 +332,10 @@ def search_sujet():
              'error' : 'mysql_connector.Error : ' + str(err)
             }),
             500)
+
     nb_results = len(results)
     pretty_result = []
+    # traitement des résultats de recherche
     for i in range (0,nb_results):
 
         print (results)
@@ -343,6 +369,7 @@ def search_sujet():
                 }),
                 500)
 
+        # test if subject has correction
         if not correction :
             result_dictionnary['has_correction'] = False
         else :
@@ -350,10 +377,7 @@ def search_sujet():
 
         pretty_result.append(result_dictionnary)
 
-
-        
-    
-
+    # renvoie l'ensemble des résultats de la recherche
     return make_response(
         jsonify(pretty_result),
         200)
