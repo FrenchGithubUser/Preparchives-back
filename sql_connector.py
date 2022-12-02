@@ -94,6 +94,27 @@ def is_correction_existing(id):
     except Exception as err:
         return  'error : mysql_connector. Error : ' + str(err)
 
+def is_commentaire_existing(id):
+    try:
+
+        params = []
+        requete = "SELECT id FROM commentaire where id =%s"
+        params.append(id)
+
+        with mysql.connector.connect(**connection_params) as db :
+            with db.cursor() as c:
+                c.execute(requete, params)
+                results = c.fetchone()
+                
+        if results:
+            return True
+        else:
+            return False
+
+    except Exception as err:
+        return  'error : mysql_connector. Error : ' + str(err)
+
+
 
 def get_correction_info(id):
     try:

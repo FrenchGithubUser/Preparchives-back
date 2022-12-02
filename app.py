@@ -98,6 +98,7 @@ if __name__ == "__main__":
     import sujet
     import correction
     import commentaire
+    import signalement
     app.run(debug=True, port=config.port, host='0.0.0.0')
     
 

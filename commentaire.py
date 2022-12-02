@@ -40,13 +40,19 @@ def ajout_commentaire():
             }),
             400)
 
-
     else:
         return make_response(jsonify({
             'Published' : False,
             'error' : 'Erreur lors de l\'ajout d\'un commentaire : contenu manquant'
             }),
             400)
+
+
+
+        # TODO check if exist no if present in request
+        # requests always send with all arguments even if = ""
+
+
 
     id_correction,id_sujet = "",""
     #test presence id_sujet
