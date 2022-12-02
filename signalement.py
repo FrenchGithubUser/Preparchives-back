@@ -139,7 +139,7 @@ def ajout_signalement():
             params.append(id_correction)
 
         # lié a un commentaire
-        elif not id_correction and  id_commentaire and not id_sujet:
+        elif not id_correction and id_commentaire and not id_sujet:
             requete += "(id_utilisateur, motif, type_signalement, id_commentaire) "
             params.append(id_commentaire)
 

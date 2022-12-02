@@ -47,38 +47,58 @@ def ajout_commentaire():
             }),
             400)
 
+    if "id_correction" in request.form:
+        id_correction = request.form["id_correction"]
 
-
-        # TODO check if exist no if present in request
-        # requests always send with all arguments even if = ""
-
-
-
-    id_correction,id_sujet = "",""
-    #test presence id_sujet
-    if "id_sujet" in request.form:
-
-        #test presence de id correction
-        if "id_correction" in request.form:
-
+        if  id_correction and not sql_connector.is_correction_existing(int(id_correction)):
             return make_response(jsonify({
             'Published' : False,
-            'error' : 'Erreur lors de l\'ajout d\'un commentaire : le commentaire ne peut être lié qu\'a un sujet ou une correction'
+            'error' : 'Erreur lors de l\'ajout d\'un commentaire : la correction commentée n\'existe pas'
             }),
-            400)
-        else:
-            id_sujet = request.form["id_sujet"]
-
-    elif "id_correction" in request.form:
-
-        id_correction = request.form["id_correction"]
+            400)  
 
     else:
         return make_response(jsonify({
             'Published' : False,
-            'error' : 'Erreur lors de l\'ajout d\'un commentaire : le commentaire doit etre lie a un sujet ou une correction'
+            'error' : 'Erreur lors de l\'ajout d\'un commentaire : id_correction manquant'
             }),
             400)
+
+    
+    if "id_commentaire" in request.form:
+        id_commentaire = request.form["id_commentaire"]
+        if id_commentaire and not sql_connector.is_commentaire_existing(int(id_commentaire)):
+            return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'un commenaitre : le commentaire commenté n\'existe pas'
+            }),
+            400)
+    
+    else:
+        return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'un commentaire : id_commentaire manquant'
+            }),
+            400)
+
+
+    if "id_sujet" in request.form:
+        id_sujet = request.form["id_sujet"]
+        if id_sujet and not sql_connector.is_subject_existing(int(id_sujet)):
+            return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'un commentaire : le sujet commenté n\'existe pas'
+            }),
+            400)
+
+    else:
+        return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'un signalement : id_sujet manquant'
+            }),
+            400)
+
+
 
     # Fin des tests des paramètres
     user_id = get_jwt_identity()
@@ -90,13 +110,37 @@ def ajout_commentaire():
         params.append(content)
         params.append(user_id)
 
-        if id_correction:
-            requete += "(contenu, id_utilisateur, id_correction)"
+        # lié a une correction 
+        if id_correction and not id_commentaire and not id_sujet:
+            requete += "(contenu, id_utilisateur, id_correction) "
             params.append(id_correction)
-        elif id_sujet:
-            requete += "(contenu, id_utilisateur, id_sujet)"
+
+        # lié a un commentaire
+        elif not id_correction and id_commentaire and not id_sujet:
+            requete += "(contenu, id_utilisateur, id_commentaire) "
+            params.append(id_commentaire)
+
+        # lié a un sujet
+        elif not id_correction and not id_commentaire and id_sujet:
+            requete += "(contenu, id_utilisateur, id_sujet) "
             params.append(id_sujet)
+
+        # lié à auncun objet
+        elif not id_sujet and not id_commentaire and not id_correction:
+            return make_response(jsonify({
+                'Published' : False,
+                'error' : 'Erreur lors de l\'ajout d\'un commentaire : le commentaire n\'est lié a aucun objet'
+                }),
+                400)
         
+        # commentaire lié a plus qu'un objet ( ne devrait pas être possible )
+        else:
+            return make_response(jsonify({
+                'Published' : False,
+                'error' : 'Erreur lors de l\'ajout d\'un commentaire : Le commentaire est lié a trop d\'objets'
+                }),
+                400)
+
         requete+= "VALUES (%s,%s,%s)"
 
         with mysql.connector.connect(**connection_params) as db :
