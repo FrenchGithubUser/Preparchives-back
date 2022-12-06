@@ -14,14 +14,15 @@ date_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 
 CREATE TABLE sujet (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-matiere ENUM ('Mathematiques', 'Physique','Chimie', 'Anglais', 'Français-Philo') NOT NULL,
-filiere ENUM ('MPSI', 'PCSI','PTSI', 'MP','PC', 'PSI','PT') NOT NULL,
+matiere ENUM ('Mathematiques', 'Physique','Chimie', 'Anglais', 'Français-Philo','SI','Informatique', 'Biologie') NOT NULL,
+filiere ENUM ('TSI','BCPST', 'MP','PC', 'PSI','PT') NOT NULL,
 epreuve ENUM ('a', 'b', 'c') NOT NULL,
 concours VARCHAR(255) NOT NULL,
 annee INT NOT NULL,
 ecrit BOOLEAN NOT NULL,
 date_ajout TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 id_utilisateur INT NOT NULL,
+has_correction BOOLEAN,
 CONSTRAINT FOREIGN KEY (id_utilisateur) REFERENCES utilisateur (id)
 );
 
@@ -29,7 +30,8 @@ CONSTRAINT FOREIGN KEY (id_utilisateur) REFERENCES utilisateur (id)
 CREATE TABLE correction(
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 date_correction TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-credit VARCHAR(255) NOT NULL,
+credit_name VARCHAR(255) NOT NULL,
+credit_link VARCHAR (255),
 id_utilisateur int NOT NULL,
 CONSTRAINT FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id),
 id_sujet int NOT NULL,

@@ -25,8 +25,8 @@ connection_params = {
     }
 
 ## Tableaux Enum
-Matiere_enum = ['Mathematiques','Physique','Chimie','Anglais','Français-Philo']
-Filiere_enum = ['MPSI','PCSI','PTSI','MP','PC','PSI','PT']
+Matiere_enum = ['Mathematiques', 'Physique','Chimie', 'Anglais', 'Français-Philo','SI','Informatique', 'Biologie']
+Filiere_enum = ['TSI','BCPST', 'MP','PC', 'PSI','PT']
 Epreuve_enum = ['a','b','c']
 
 ## Methode pour poster un sujet
@@ -349,31 +349,8 @@ def search_sujet():
         result_dictionnary['annee'] = results[i][5]
         result_dictionnary['ecrit'] = results[i][6]
         result_dictionnary['date_ajout'] = results[i][7]
-        result_dictionnary['id_utilisateur'] = results[i][8]    
-        
-
-
-        requete = "SELECT * from correction where id_sujet=%s"    
-        params = []
-        params.append(results[i][0])
-
-        try:
-            with mysql.connector.connect(**connection_params) as db :
-                with db.cursor() as c:
-                    c.execute(requete, params)
-                    correction =  c.fetchall()
-    
-        except Exception as err:
-            return make_response(jsonify({
-                'error' : 'mysql_connector.Error : ' + str(err)
-                }),
-                500)
-
-        # test if subject has correction
-        if not correction :
-            result_dictionnary['has_correction'] = False
-        else :
-            result_dictionnary['has_correction'] = True
+        result_dictionnary['id_utilisateur'] = results[i][8]
+        result_dictionnary['has_correction'] = results[i][9]    
 
         pretty_result.append(result_dictionnary)
 
@@ -530,7 +507,7 @@ def get_commentaire_from_sujet():
                 result_dictionnary['id_sujet'] = results[i][0]
                 result_dictionnary['contenu'] = results[i][1]
                 result_dictionnary['date_ajout'] = results[i][2]
-                result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])['username']
+                result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])
       
                 pretty_result.append(result_dictionnary)
             return make_response(

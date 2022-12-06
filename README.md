@@ -8,6 +8,8 @@
     - ```python3 -m pip install Flask```
     - ```python3 -m pip install passlib```
     - ```python3 -m pip install flask_cors```
+    - ```python3 -m pip install validators```
+
 
 
 ## Endpoints

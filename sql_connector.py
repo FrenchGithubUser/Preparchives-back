@@ -135,4 +135,21 @@ def get_correction_info(id):
         return pretty_results
 
     except Exception as err:
-        return  'error : mysql_connector. Error : ' + str(err)       
+        return  'error : mysql_connector. Error : ' + str(err)
+
+
+def add_correction_to_subject(id):
+    try:
+        params = []
+        requete = "UPDATE sujet SET has_correction = TRUE where id = %s"
+        params.append(id)
+
+        with mysql.connector.connect(**connection_params) as db :
+            with db.cursor() as c:
+                c.execute(requete, params)
+                db.commit()
+
+        return True
+
+    except Exception as err:
+        return  False

@@ -7,6 +7,7 @@ import sql_connector
 import mysql.connector
 import datetime
 import re
+import validators
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt
@@ -55,9 +56,9 @@ def ajout_correction():
             400)
 
     ## Test de la présence de credit
-    if 'credit' in request.form:
-        credit = request.form["credit"]
-        if len(credit)>255:
+    if 'credit_name' in request.form:
+        credit_name = request.form["credit_name"]
+        if len(credit_name)>255:
             return make_response(jsonify({
                 'Published' : False,
                 'error' : 'Erreur lors de l\'ajout d\'une correction : Crédit trop long'
@@ -66,7 +67,31 @@ def ajout_correction():
 
     else:
         user = sql_connector.get_user_info(user_id)
-        credit = user["username"]
+        credit_name = user["username"]
+
+    
+    ## Test de la présence d'un sujet
+    if 'credit_link' in request.form:
+        credit_link = request.form["credit_link"]
+
+        if credit_link and validators.url(credit_link):
+            pass
+
+        elif credit_link:
+            return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'une correction : URL invalide '
+            }),
+            400)        
+
+    else:
+        return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'une correction : La correction n\'a pas d\'URL'
+            }),
+            400)
+
+
 
     ## Test de la présence d'un sujet
     if 'id_sujet' in request.form:
@@ -78,6 +103,18 @@ def ajout_correction():
             'error' : 'Erreur lors de l\'ajout d\'une correction : Le sujet lié n\'existe pas'
             }),
             400)
+
+        # udpate du booleen "has_correction" dans la table sujet
+        if sql_connector.add_correction_to_subject(id_sujet):
+            pass
+
+        else:
+            return make_response(jsonify({
+            'Published' : False,
+            'error' : 'Erreur lors de l\'ajout d\'une correction : Le sujet lié n\'existe pas'
+            }),
+            400)
+
 
     else:
         return make_response(jsonify({
@@ -92,10 +129,11 @@ def ajout_correction():
     try:
         params = []
         requete = "INSERT into correction  \
-                    (credit, id_utilisateur, id_sujet) \
-                    VALUES(%s,%s,%s)\
+                    (credit_name, credit_link ,id_utilisateur, id_sujet) \
+                    VALUES(%s,%s,%s,%s)\
                     returning id"
-        params.append(credit)
+        params.append(credit_name)
+        params.append(credit_link)
         params.append(user_id)
         params.append(id_sujet)
 
@@ -225,7 +263,7 @@ def get_commentaire_from_correction():
                 result_dictionnary['id_commentaire'] = results[i][0]
                 result_dictionnary['contenu'] = results[i][1]
                 result_dictionnary['date_ajout'] = results[i][2]
-                result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])['username']
+                result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])
       
                 pretty_result.append(result_dictionnary)
             return make_response(
