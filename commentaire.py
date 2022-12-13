@@ -74,11 +74,11 @@ def ajout_commentaire():
             }),
             400)
     
-    else:
-        return make_response(jsonify({
-            'Published' : False,
-            'error' : 'Erreur lors de l\'ajout d\'un commentaire : id_commentaire manquant'
-            }),
+    # else:
+    #     return make_response(jsonify({
+    #         'Published' : False,
+    #         'error' : 'Erreur lors de l\'ajout d\'un commentaire : id_commentaire manquant'
+    #         }),
             400)
 
 
@@ -91,12 +91,12 @@ def ajout_commentaire():
             }),
             400)
 
-    else:
-        return make_response(jsonify({
-            'Published' : False,
-            'error' : 'Erreur lors de l\'ajout d\'un signalement : id_sujet manquant'
-            }),
-            400)
+    # else:
+    #     return make_response(jsonify({
+    #         'Published' : False,
+    #         'error' : 'Erreur lors de l\'ajout d\'un signalement : id_sujet manquant'
+    #         }),
+    #         400)
 
 
 
