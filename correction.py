@@ -85,11 +85,12 @@ def ajout_correction():
             400)        
 
     else:
-        return make_response(jsonify({
-            'Published' : False,
-            'error' : 'Erreur lors de l\'ajout d\'une correction : La correction n\'a pas d\'URL'
-            }),
-            400)
+        credit_link = None
+        # return make_response(jsonify({
+        #     'Published' : False,
+        #     'error' : 'Erreur lors de l\'ajout d\'une correction : La correction n\'a pas d\'URL'
+        #     }),
+        #     400)
 
 
 
