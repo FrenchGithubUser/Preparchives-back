@@ -79,7 +79,7 @@ def ajout_commentaire():
     #         'Published' : False,
     #         'error' : 'Erreur lors de l\'ajout d\'un commentaire : id_commentaire manquant'
     #         }),
-            400)
+    #        400)
 
 
     if "id_sujet" in request.form:
