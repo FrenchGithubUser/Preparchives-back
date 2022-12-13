@@ -43,17 +43,17 @@ def ajout_correction():
             }),
             400)
     ##Test pour savoir si le fichier a l'extension pdf
-    pattern = "^\S+\.pdf+$"
-    objs = re.search(pattern, file.filename)
-    try:
-        if objs.string == file.filename:
-            pass
-    except:
-        return make_response(jsonify({
-            'Published' : False,
-            'error' : 'Erreur lors de l\'ajout d\'une correction : Le fichier n\'est pas au format pdf'
-            }),
-            400)
+    # pattern = "^\S+\.pdf+$"
+    # objs = re.search(pattern, file.filename)
+    # try:
+    #     if objs.string == file.filename:
+    #         pass
+    # except:
+    #     return make_response(jsonify({
+    #         'Published' : False,
+    #         'error' : 'Erreur lors de l\'ajout d\'une correction : Le fichier n\'est pas au format pdf'
+    #         }),
+    #         400)
 
     ## Test de la présence de credit
     if 'credit_name' in request.form:
