@@ -29,7 +29,9 @@ connection_params = {
 @app.route('/commentaire', methods=['POST'])
 @jwt_required()
 def ajout_commentaire():
-
+    id_correction = None
+    id_commentaire = None
+    id_sujet = None
     #test présence de contenue
     if "contenu" in request.form:
         content = request.form["contenu"]
