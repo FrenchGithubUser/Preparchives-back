@@ -57,12 +57,12 @@ def ajout_commentaire():
             }),
             400)  
 
-    else:
-        return make_response(jsonify({
-            'Published' : False,
-            'error' : 'Erreur lors de l\'ajout d\'un commentaire : id_correction manquant'
-            }),
-            400)
+        # else:
+        #     return make_response(jsonify({
+        #         'Published' : False,
+        #         'error' : 'Erreur lors de l\'ajout d\'un commentaire : id_correction manquant'
+        #         }),
+        #         400)
 
     
     if "id_commentaire" in request.form:
