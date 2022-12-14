@@ -26,8 +26,8 @@ def get_user_info(id):
             pretty_results['username'] = results[0][0]
             pretty_results['nom'] = results[0][1]
             pretty_results['prenom'] = results[0][2]
-            #pretty_results['email'] = results[0][3]
-            #pretty_results['date_creation'] = results[0][4]
+            pretty_results['email'] = results[0][3]
+            pretty_results['date_creation'] = results[0][4]
         else: 
             pretty_results['error'] = "Utilisateur non trouvé"
         return pretty_results
