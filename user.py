@@ -169,8 +169,8 @@ def login():
     ## Verification de l'existence d'un utilisateur
     try:
         params = []
-        requete = "SELECT id,password FROM utilisateur WHERE username=%s"
-        params.append(username)
+        requete = "SELECT id,password FROM utilisateur WHERE username=%s or email=%s"
+        params.append(username,username)
         with mysql.connector.connect(**connection_params) as db :
             with db.cursor() as c:
                 c.execute(requete, params)
