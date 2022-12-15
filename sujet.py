@@ -493,7 +493,7 @@ def get_commentaire_from_sujet():
                     with db.cursor() as c:
                         c.execute(requete, params)
                         results =  c.fetchall()
-                        return(len(results))
+                        #return(len(results))
             except Exception as err:
                 return make_response(jsonify({
                     'error' : 'mysql_connector.Error : ' + str(err)
@@ -508,7 +508,7 @@ def get_commentaire_from_sujet():
                     result_dictionnary['id_commentaire'] = results[i][0]
                     result_dictionnary['contenu'] = results[i][1]
                     result_dictionnary['date_ajout'] = results[i][2]
-                    result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])['username']
+                    result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])
                         
                     pretty_result.append(result_dictionnary)
                 return make_response(
