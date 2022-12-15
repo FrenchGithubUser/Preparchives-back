@@ -524,7 +524,7 @@ def get_commentaire_from_sujet():
                             'error' : 'mysql_connector.Error : ' + str(err)
                             }),
                             500)
-                    nb_enfants = len(results)
+                    nb_enfants = len(results_enfants)
                     pretty_result_enfants = []
                     ## pour chaque commentaire enfant
                     if results_enfants:
