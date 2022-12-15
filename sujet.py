@@ -499,19 +499,25 @@ def get_commentaire_from_sujet():
                     'error' : 'mysql_connector.Error : ' + str(err)
                     }),
                     500)
-            nb_results = len(results)
-            pretty_result = []
-            for i in range (0,nb_results):
-                result_dictionnary = {}
-                result_dictionnary['id_commentaire'] = results[i][0]
-                result_dictionnary['contenu'] = results[i][1]
-                result_dictionnary['date_ajout'] = results[i][2]
-                result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])['username']
-      
-                pretty_result.append(result_dictionnary)
-            return make_response(
-            jsonify(pretty_result),
-            200)
+            try:
+                nb_results = len(results)
+                pretty_result = []
+                for i in range (0,nb_results):
+                    result_dictionnary = {}
+                    result_dictionnary['id_commentaire'] = results[i][0]
+                    result_dictionnary['contenu'] = results[i][1]
+                    result_dictionnary['date_ajout'] = results[i][2]
+                    result_dictionnary['username'] = sql_connector.get_user_info(results[i][5])['username']
+        
+                    pretty_result.append(result_dictionnary)
+                return make_response(
+                jsonify(pretty_result),
+                200)
+            except Exception as err:
+                return make_response(jsonify({
+                    'error' : 'Internal error : ' + str(err)
+                    }),
+                    500)
         else:
             return make_response(jsonify({
                 'error' : 'Erreur lors de a récupération des commentaires: Le commentaire n\'existe pas'
