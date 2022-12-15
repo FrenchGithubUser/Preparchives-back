@@ -499,7 +499,7 @@ def get_commentaire_from_sujet():
                     'error' : 'mysql_connector.Error : ' + str(err)
                     }),
                     500)
-            print('results')
+            print(len(results))
             try:
                 nb_results = len(results)
                 pretty_result = []
