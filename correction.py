@@ -255,8 +255,10 @@ def get_correction_pdf():
                         'error' : 'mysql_connector.Error : ' + str(err)
                         }),
                         500)
-        correction_id = results[0][0]
-        print(correction_id)
+        if results:
+            correction_id = results[0][0]
+        else:
+            correction_id = -1
         try:
             if sql_connector.is_correction_existing(correction_id):
                 return send_file(path_or_file=config.correction_folder + str(correction_id) + ".pdf")
