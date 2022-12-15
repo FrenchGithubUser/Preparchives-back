@@ -71,6 +71,7 @@ def is_subject_existing(id):
             return False
 
     except Exception as err:
+        print('error : mysql_connector. Error : ' + str(err))
         return  'error : mysql_connector. Error : ' + str(err)
 
 
