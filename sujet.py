@@ -509,7 +509,35 @@ def get_commentaire_from_sujet():
                     result_dictionnary['contenu'] = results[i][1]
                     result_dictionnary['date_ajout'] = results[i][2]
                     result_dictionnary['username'] = sql_connector.get_user_info(results[i][6])['username']
-                        
+
+                    ## Gestion des commentaires enfants
+                    requete = "SELECT * from commentaire where id_commentaire=%s"    
+                    params = []
+                    params.append(result_dictionnary['id_commentaire'])
+                    try:
+                        with mysql.connector.connect(**connection_params) as db :
+                            with db.cursor() as c:
+                                c.execute(requete, params)
+                                results_enfants =  c.fetchall()
+                    except Exception as err:
+                        return make_response(jsonify({
+                            'error' : 'mysql_connector.Error : ' + str(err)
+                            }),
+                            500)
+                    nb_enfants = len(results)
+                    pretty_result_enfants = []
+                    ## pour chaque commentaire enfant
+                    for i in range (0,nb_enfants):
+                        result_dictionnary_enfant = {}
+                        result_dictionnary_enfant['id_commentaire'] = results_enfants[i][0]
+                        result_dictionnary_enfant['contenu'] = results_enfants[i][1]
+                        result_dictionnary_enfant['date_ajout'] = results_enfants[i][2]
+                        result_dictionnary_enfant['username'] = sql_connector.get_user_info(results_enfants[i][6])['username']
+                        pretty_result_enfants.append(result_dictionnary_enfant)
+
+                    #Ajout de la liste des commentaire enfants à la réponse
+                    result_dictionnary['username'] = pretty_result_enfants 
+
                     pretty_result.append(result_dictionnary)
                 return make_response(
                 jsonify(pretty_result),
