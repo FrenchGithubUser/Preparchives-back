@@ -503,7 +503,7 @@ def get_commentaire_from_sujet():
                 nb_results = len(results)
                 pretty_result = []
                 for i in range (0,nb_results):
-                    print(results[i][5])
+                    print(results[i])
                     result_dictionnary = {}
                     result_dictionnary['id_commentaire'] = results[i][0]
                     result_dictionnary['contenu'] = results[i][1]
