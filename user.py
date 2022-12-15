@@ -170,7 +170,8 @@ def login():
     try:
         params = []
         requete = "SELECT id,password FROM utilisateur WHERE username=%s or email=%s"
-        params.append(username,username)
+        params.append(username)
+        params.append(username)
         with mysql.connector.connect(**connection_params) as db :
             with db.cursor() as c:
                 c.execute(requete, params)
