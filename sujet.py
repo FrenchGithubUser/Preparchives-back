@@ -493,13 +493,13 @@ def get_commentaire_from_sujet():
                     with db.cursor() as c:
                         c.execute(requete, params)
                         results =  c.fetchall()
-    
+                        print(len(results))
             except Exception as err:
                 return make_response(jsonify({
                     'error' : 'mysql_connector.Error : ' + str(err)
                     }),
                     500)
-            print(len(results))
+            
             try:
                 nb_results = len(results)
                 pretty_result = []
