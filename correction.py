@@ -256,6 +256,7 @@ def get_correction_pdf():
                         }),
                         500)
         correction_id = results[0][0]
+        print(correction_id)
         try:
             return send_file(path_or_file=config.correction_folder + correction_id + ".pdf")
         except:
