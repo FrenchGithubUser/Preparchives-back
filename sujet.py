@@ -479,7 +479,6 @@ def get_corrections_from_sujet():
 
 ## Methode pour recupérer la liste de correction d'un sujet
 @app.route('/sujet/commentaire', methods=['GET'])
-@jwt_required()
 def get_commentaire_from_sujet():
 
     if 'id' in request.args:
