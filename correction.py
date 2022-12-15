@@ -210,15 +210,52 @@ def get_correction_info():
 @app.route('/correction/pdf', methods=['GET'])
 @jwt_required()
 def get_correction_pdf():
+    # if 'id' in request.args:
+    #     correction_id = request.args['id']
+    # else:
+    #     return make_response(jsonify({
+    #             'error' : 'Erreur lors de l\'affichage d\'une correction: L\'identifiant n\'est pas trouvé'
+    #             }),
+    #             400)
+
+    # if sql_connector.is_correction_existing(correction_id):
+    #     try:
+    #         return send_file(path_or_file=config.correction_folder + correction_id + ".pdf")
+    #     except:
+    #         return make_response(jsonify({
+    #             'error' : 'Erreur lors du chargement de la correction'
+    #             }),
+    #             400)
+            
+    # else:
+    #     return make_response(jsonify({
+    #             'error' : 'Erreur lors de l\'affichage d\'une correction: La correction n\'existe pas'
+    #             }),
+    #             400)
+
     if 'id' in request.args:
-        correction_id = request.args['id']
+        id_sujet = request.args['id']
     else:
         return make_response(jsonify({
                 'error' : 'Erreur lors de l\'affichage d\'une correction: L\'identifiant n\'est pas trouvé'
                 }),
                 400)
-
-    if sql_connector.is_correction_existing(correction_id):
+    if sql_connector.is_subject_existing(id_sujet):
+        requete = "SELECT * from correction where id_sujet=%s"    
+        params = []
+        params.append(id_sujet)
+        try:
+            with mysql.connector.connect(**connection_params) as db :
+                with db.cursor() as c:
+                    c.execute(requete, params)
+                    results =  c.fetchall()
+    
+        except Exception as err:
+            return make_response(jsonify({
+                        'error' : 'mysql_connector.Error : ' + str(err)
+                        }),
+                        500)
+        correction_id = results[0][0]
         try:
             return send_file(path_or_file=config.correction_folder + correction_id + ".pdf")
         except:
@@ -226,12 +263,12 @@ def get_correction_pdf():
                 'error' : 'Erreur lors du chargement de la correction'
                 }),
                 400)
-            
     else:
         return make_response(jsonify({
-                'error' : 'Erreur lors de l\'affichage d\'une correction: La correction n\'existe pas'
+            'error' : 'Erreur lors de a récupération des corrections: Le sujet n\'existe pas'
                 }),
                 400)
+
 
 
 ## Methode pour recupérer la liste de commentaire d'une correction
