@@ -258,7 +258,12 @@ def get_correction_pdf():
         correction_id = results[0][0]
         print(correction_id)
         try:
-            return send_file(path_or_file=config.correction_folder + str(correction_id) + ".pdf")
+            if sql_connector.is_correction_existing(correction_id):
+                return send_file(path_or_file=config.correction_folder + str(correction_id) + ".pdf")
+            return make_response(jsonify({
+            'error' : 'Erreur lors de a récupération des corrections: La correction n\'existe pas'
+                }),
+                400)
         except:
             return make_response(jsonify({
                 'error' : 'Erreur lors du chargement de la correction'
