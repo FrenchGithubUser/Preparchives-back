@@ -71,7 +71,7 @@ def refresh_expiring_jwts(response):
     try:
         exp_timestamp = get_jwt()["exp"]
         now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=60))
+        target_timestamp = datetime.timestamp(now + timedelta(hours=60))
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
@@ -84,7 +84,7 @@ def refresh_expiring_jwts(response):
 app.config["JWT_COOKIE_SECURE"] = True             
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]      ## Enregistrement du token de session dans les cookies
 app.config["JWT_SECRET_KEY"] = config.secret        ## Clé privée permettant de générer les token
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=120)     ## Durée de vie du token
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=120)     ## Durée de vie du token
 app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 app.config["JWT_COOKIE_SAMESITE"] = None
 
