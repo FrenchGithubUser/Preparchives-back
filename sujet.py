@@ -499,11 +499,11 @@ def get_commentaire_from_sujet():
                     'error' : 'mysql_connector.Error : ' + str(err)
                     }),
                     500)
+            print(results[0])
             try:
                 nb_results = len(results)
                 pretty_result = []
                 for i in range (0,nb_results):
-                    print(results[i])
                     result_dictionnary = {}
                     result_dictionnary['id_commentaire'] = results[i][0]
                     result_dictionnary['contenu'] = results[i][1]
