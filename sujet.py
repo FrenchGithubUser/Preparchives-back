@@ -527,16 +527,17 @@ def get_commentaire_from_sujet():
                     nb_enfants = len(results)
                     pretty_result_enfants = []
                     ## pour chaque commentaire enfant
-                    for j in range (0,nb_enfants):
-                        result_dictionnary_enfant = {}
-                        result_dictionnary_enfant['id_commentaire'] = results_enfants[j][0]
-                        result_dictionnary_enfant['contenu'] = results_enfants[j][1]
-                        result_dictionnary_enfant['date_ajout'] = results_enfants[j][2]
-                        result_dictionnary_enfant['username'] = sql_connector.get_user_info(results_enfants[j][6])['username']
-                        pretty_result_enfants.append(result_dictionnary_enfant)
+                    if results_enfants:
+                        for j in range (0,nb_enfants):
+                            result_dictionnary_enfant = {}
+                            result_dictionnary_enfant['id_commentaire'] = results_enfants[j][0]
+                            result_dictionnary_enfant['contenu'] = results_enfants[j][1]
+                            result_dictionnary_enfant['date_ajout'] = results_enfants[j][2]
+                            result_dictionnary_enfant['username'] = sql_connector.get_user_info(results_enfants[j][6])['username']
+                            pretty_result_enfants.append(result_dictionnary_enfant)
 
-                    #Ajout de la liste des commentaire enfants à la réponse
-                    result_dictionnary['username'] = pretty_result_enfants 
+                        #Ajout de la liste des commentaire enfants à la réponse
+                        result_dictionnary['reponses'] = pretty_result_enfants 
 
                     pretty_result.append(result_dictionnary)
                 return make_response(
