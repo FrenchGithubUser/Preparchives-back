@@ -419,7 +419,8 @@ def get_sujet_info():
             'annee' : result[5],
             'ecrit' : result[6],
             'date_ajout' : result[7],
-            'username' : username
+            'username' : username,
+            'has_correction' : result[9]
         })
     except Exception as err:
         return make_response(jsonify({
