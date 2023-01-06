@@ -97,3 +97,14 @@ def logout_():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
+
+
+@app.route("/test/refresh", methods=["GET"])
+@jwt_required(refresh=True)
+def refresh():
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+    response = jsonify({"msg": "refresh successful"})
+    set_access_cookies(response, access_token)
+    return response
+
