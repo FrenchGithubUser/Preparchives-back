@@ -25,7 +25,7 @@ connection_params = {
     }
 
 ## Tableaux Enum
-Matiere_enum = ['Mathematiques', 'Physique','Chimie', 'Anglais', 'Français-Philo','SI','Informatique', 'Biologie']
+Matiere_enum = ['Mathematiques', 'Physique-Chimie', 'Anglais', 'Français-Philo','SI','Informatique', 'Biologie']
 Filiere_enum = ['TSI','BCPST', 'MP','PC', 'PSI','PT']
 Epreuve_enum = ['a','b','c','d']
 
